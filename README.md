@@ -1,14 +1,14 @@
 # test-point-cloud-registration  
-Testing registration algorithm from librar: openCV and PCL 
+Testing PCL library, mainly function about registration.
 
 ## Settings
 ### OS  
 Windows7 x64  
 ### Compiler  
 Microsoft Visual C++ 2015  
-### Dependency  
-PCL 1.8.0  
-openCV 4.1.0 cuda 9.0
+### PCL installation  
+Download [PCL 1.8.0 All-in-one Installer MSVC2015 x64](https://1drv.ms/u/s!ApoY_0Ymu57sg5QiqO2sR1k-zcSi_w)  
+Add PCL to system PATH   
   
 ## Usage
 ### Compile
