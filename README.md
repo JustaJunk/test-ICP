@@ -1,4 +1,4 @@
-# test-point-cloud-registration  
+# test-PCL
 Testing PCL library, mainly function about registration.
 
 ## Settings
