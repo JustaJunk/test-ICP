@@ -12,9 +12,10 @@ Add PCL to system PATH
   
 ## Usage
 ### Compile
-run genmake.bat  
-run make.bat  
-OR  
-compile it with cmake-gui  
-### Output path
+compile it with cmake-gui or write your own make-commands(.bat)
+### Runtime output path
 ./build/bin
+### Library output path
+./build/lib
+### Archive output path
+./build/lib
