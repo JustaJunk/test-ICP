@@ -7,7 +7,7 @@ Windows7 x64
 ### Compiler  
 Microsoft Visual C++ 2015  
 ### Dependency  
-PCL 1.8.0
+PCL 1.8.0  
 openCV 4.1.0 cuda 9.0
   
 ## Usage
