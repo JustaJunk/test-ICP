@@ -25,12 +25,21 @@ include_directories(include)
 aux_source_directory(src 	mypclSRCS)
 
 #-------------------------------------------------------------------------------
-#  Setup pcl library
+#  Setup PCL library
 #-------------------------------------------------------------------------------
 find_package(PCL 1.8 REQUIRED)
 include_directories(${PCL_INCLUDE_DIRS})
 link_directories(${PCL_LIBRARY_DIRS})
 add_definitions(${PCL_DEFINITIONS})
+
+#-------------------------------------------------------------------------------
+#  Setup openCV library (only module core and surface-matching)
+#-------------------------------------------------------------------------------
+set(OPENCV_LIB_PATH 	"c:/library/opencv-4.1.0-cuda-9.0")
+include_directories(${OPENCV_LIB_PATH}/include)
+link_directories(${OPENCV_LIB_PATH}/x64/vc14/lib)
+set(OPENCV_MODULE_SS 	opencv_surface_matching410)
+set(OPENCV_MODULE_CORE 	opencv_core410)
 
 #-------------------------------------------------------------------------------
 #  Link all library
@@ -43,6 +52,8 @@ add_library(
 target_link_libraries(
 	${LIBRARIES}
 	${PCL_LIBRARIES}
+	${OPENCV_MODULE_SS}
+	${OPENCV_MODULE_CORE}
 )
 
 #-------------------------------------------------------------------------------
