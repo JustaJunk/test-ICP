@@ -14,7 +14,7 @@ namespace mycv
 
 //#############################################################################
 //
-//  convertPCVtoMAT(): convert std::vector<cv::Point3d> to cv::Mat (Nx3)
+//  convertVECtoMAT(): convert std::vector<cv::Point3d> to cv::Mat (Nx3)
 //
 //#############################################################################
 int convertVECtoMAT(	const std::vector<cv::Point3d> 	&points_vec,
