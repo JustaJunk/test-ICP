@@ -5,7 +5,7 @@
 //#############################################################################
 #include <cstdlib>
 #include <iostream>
-#include "pcd_xyz.h"
+#include "pcl_parser.h"
 
 int main()
 {

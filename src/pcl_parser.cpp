@@ -1,11 +1,11 @@
 //#############################################################################
 //
-//	pcd_xyz.cpp
+//	pcl_parser.cpp
 //
 //#############################################################################
 #include <cstdlib>
 #include <iostream>
-#include "pcd_xyz.h"
+#include "pcl_parser.h"
 
 namespace mypcl
 {
@@ -51,9 +51,9 @@ int loadXYZtoPCD(	const std::string 						&xyz_filename,
 		{
 		  continue;
 		}
-		pcl_pc.push_back(pcl::PointXYZ( (float)std::atof( str_vec.at(0).c_str() ),
-										(float)std::atof( str_vec.at(1).c_str() ),
-										(float)std::atof( str_vec.at(2).c_str() )));
+		pcl_pc.push_back(pcl::PointXYZ( std::stof( str_vec.at(0) ),
+										std::stof( str_vec.at(1) ),
+										std::stof( str_vec.at(2) )));
 	}
 	xyz_fs.close();
 
@@ -75,14 +75,13 @@ int savePCDtoXYZ(	const pcl::PointCloud<pcl::PointXYZ> 	&pcl_pc,
 {
 	std::ofstream 					xyz_file;
 	pcl::PointXYZ 					point;
-	size_t  						pc_size;
+	size_t  						pc_size = pcl_pc.points.size();
 
 	//--- Open output XYZ file
-	pc_size = pcl_pc.points.size();
 	xyz_file.open(xyz_filename);
 	if (!xyz_file.is_open())
 	{
-		std::cout << "ERROR: Saving XYZ file failure!" << std::endl;
+		std::cout << "ERROR: Saving XYZ file failure" << std::endl;
 		return EXIT_FAILURE;
 	}
 
@@ -93,6 +92,7 @@ int savePCDtoXYZ(	const pcl::PointCloud<pcl::PointXYZ> 	&pcl_pc,
 		xyz_file << point.x << " " << point.y << " " << point.z << "\n";
 	}
 	xyz_file.close();	
+
 	return EXIT_SUCCESS;
 }
 

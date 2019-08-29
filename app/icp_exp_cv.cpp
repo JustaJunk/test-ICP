@@ -1,61 +1,42 @@
 //#############################################################################
 //
-//  cv_icp_exp.cpp
+//  icp_exp_cv.cpp
 //
 //#############################################################################
 #include <iostream>
 #include <opencv2/surface_matching.hpp>
 #include <opencv2/surface_matching/ppf_helpers.hpp>
-#include "pcd_xyz.h"
+#include "cv_parser.h"
 
 int main()
 {
-	pcl::PointCloud<pcl::PointXYZ> 	pc1;
-	pcl::PointCloud<pcl::PointXYZ> 	pc2;
-	pcl::PointCloud<pcl::PointXYZ> 	pc2r;
-	std::string 					pc1_filename  = "pc_1.xyz";
-	std::string 					pc2_filename  = "pc_2.xyz";
-	std::string 					pc2r_filename = "pc_2r.xyz";
+	cv::Mat 				p1_mat;
+	cv::Mat 				p2_mat;
+	cv::Mat 				p2r_mat;
+	const std::string 		file_path 		= "../../Dataset/";
+	const std::string 		pc1_filename  	= file_path + "pc_1.xyz";
+	const std::string 		pc2_filename  	= file_path + "pc_2.xyz";
+	const std::string 		pc2r_filename 	= file_path + "pc_2_cv.xyz";
 
 	//--- Load 2 input point cloud
-	if (mypcl::loadXYZtoPCD(pc1_filename, pc1) == EXIT_SUCCESS)
+	if (mycv::loadXYZtoMAT(pc1_filename, p1_mat) == EXIT_SUCCESS)
 	{
 		std::cout << "COMPLETE: load " << pc1_filename << std::endl;
 	}
 	else
 	{
-		std::cout << "ERROR: loadXYZtoPCD() when loading " << pc1_filename << std::endl;
+		std::cout << "ERROR: mycv::loadXYZtoMAT() when loading " << pc1_filename << std::endl;
 		return EXIT_FAILURE;
 	}
-	if (mypcl::loadXYZtoPCD(pc2_filename, pc2) == EXIT_SUCCESS)
+	if (mycv::loadXYZtoMAT(pc2_filename, p2_mat) == EXIT_SUCCESS)
 	{
 		std::cout << "COMPLETE: load " << pc2_filename << std::endl;
 	}
 	else
 	{
-		std::cout << "ERROR: loadXYZtoPCD() when loading " << pc2_filename << std::endl;
+		std::cout << "ERROR: mycv::loadXYZtoMAT() when loading " << pc2_filename << std::endl;
 		return EXIT_FAILURE;
 	}
-
-	//--- Convert pc into cv::Mat
-	size_t 		pc1_count 	= pc1.size();
-	size_t 		pc2_count 	= pc2.size();
-	cv::Mat 	p1_mat(pc1_count, 3, CV_32F);
-	cv::Mat 	p2_mat(pc2_count, 3, CV_32F);
-	for (size_t row = 0; row < pc1_count; ++row)
-	{
-		p1_mat.at<float>(row,0) = pc1.points.at(row).x;
-		p1_mat.at<float>(row,1) = pc1.points.at(row).y;
-		p1_mat.at<float>(row,2) = pc1.points.at(row).z;
-	}
-	std::cout << "COMPLETE: convert pc1 to p1_mat " << std::endl;
-	for (size_t row = 0; row < pc2_count; ++row)
-	{
-		p2_mat.at<float>(row,0) = pc2.points.at(row).x;
-		p2_mat.at<float>(row,1) = pc2.points.at(row).y;
-		p2_mat.at<float>(row,2) = pc2.points.at(row).z;
-	}
-	std::cout << "COMPLETE: convert pc2 to p2_mat " << std::endl;
 
 	//--- Compute normals
 	cv::Mat 		pn1_mat;
@@ -110,6 +91,10 @@ int main()
 	std::cout << std::endl << "score: " << score << std::endl 
 							<< "transformation:" << std::endl
 							<< transformation << std::endl << std::endl;
+
+	//--- Save result
+	p2r_mat = cv::ppf_match_3d::transformPCPose(p2_mat,transformation);
+	mycv::saveMATtoXYZ(p2r_mat, pc2r_filename);
 
 	return EXIT_SUCCESS;
 }

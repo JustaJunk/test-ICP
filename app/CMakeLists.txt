@@ -35,37 +35,25 @@ target_link_libraries(
 )
 
 #------------------------------------------------------------------------------
-#  pcl_icp_random 
+#  icp_exp_pcl 
 #------------------------------------------------------------------------------
 add_executable(
-	pcl_icp_random 
-	pcl_icp_random.cpp
+	icp_exp_pcl 
+	icp_exp_pcl.cpp
 )
 target_link_libraries(
-	pcl_icp_random 
+	icp_exp_pcl 
 	${LIBRARIES}
 )
 
 #------------------------------------------------------------------------------
-#  pcl_icp_exp 
+#  icp_exp_cv 
 #------------------------------------------------------------------------------
 add_executable(
-	pcl_icp_exp 
-	pcl_icp_exp.cpp
+	icp_exp_cv 
+	icp_exp_cv.cpp
 )
 target_link_libraries(
-	pcl_icp_exp 
-	${LIBRARIES}
-)
-
-#------------------------------------------------------------------------------
-#  cv_icp_exp 
-#------------------------------------------------------------------------------
-add_executable(
-	cv_icp_exp 
-	cv_icp_exp.cpp
-)
-target_link_libraries(
-	cv_icp_exp 
+	icp_exp_cv 
 	${LIBRARIES}
 )
