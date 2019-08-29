@@ -22,7 +22,7 @@ int main()
 	}
 
 	//--- Save pc in PCD file
-	if (pcl::io::savePCDFile<pcl::PointXYZ>(pcd_filename, pc) == -1)
+	if (pcl::io::savePCDFile(pcd_filename, pc) == -1)
 	{
 		std::cout << "ERROR: Can't save PCD file " << pcd_filename << std::endl;
 		return EXIT_FAILURE;

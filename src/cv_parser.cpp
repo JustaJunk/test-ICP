@@ -45,7 +45,8 @@ int loadXYZtoMAT(	const std::string 	&xyz_filename,
 	std::ifstream 				xyz_fs;
 	std::string 				line;
 	std::vector<std::string> 	str_vec;
-	std::vector<cv::Point3d>	points_vec; 	
+	std::vector<cv::Point3d>	points_vec;
+	const int					pc_size_unit = 1e5;	
 
 	//--- Check that file exists and open successfully
 	xyz_fs.open(xyz_filename.c_str(), std::ios::binary);
@@ -58,7 +59,7 @@ int loadXYZtoMAT(	const std::string 	&xyz_filename,
 
 	//--- Parse every line (correspond to every point)
 	points_vec.clear();
-	points_vec.reserve(1000000);
+	points_vec.reserve(pc_size_unit);
 	while (!xyz_fs.eof())
 	{
 		std::getline(xyz_fs, line);
@@ -115,9 +116,9 @@ int saveMATtoXYZ(	const cv::Mat 		&Nx3_mat,
 	//--- Write in data
 	for (size_t row = 0; row < point_count; ++row)
 	{
-		xyz_file << Nx3_mat.at<float>(row,0) << " "
-				 << Nx3_mat.at<float>(row,1) << " " 
-				 << Nx3_mat.at<float>(row,2) << "\n";
+		xyz_file << std::to_string(Nx3_mat.at<float>(row,0)) << " "
+				 << std::to_string(Nx3_mat.at<float>(row,1)) << " " 
+				 << std::to_string(Nx3_mat.at<float>(row,2)) << "\n";
 	}
 	xyz_file.close();
 

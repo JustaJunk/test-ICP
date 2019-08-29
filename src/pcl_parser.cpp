@@ -21,6 +21,7 @@ int loadXYZtoPCD(	const std::string 						&xyz_filename,
 	std::ifstream 				xyz_fs;
 	std::string 				line;
 	std::vector<std::string> 	str_vec;
+	const int					pc_size_unit = 1e5;
 
 	//--- Check that file exists and open successfully
 	xyz_fs.open(xyz_filename.c_str(), std::ios::binary);
@@ -33,7 +34,7 @@ int loadXYZtoPCD(	const std::string 						&xyz_filename,
 
 	//--- Parse every line (correspond to every point)
 	pcl_pc.clear();
-	pcl_pc.reserve(1000000);
+	pcl_pc.reserve(pc_size_unit);
 	while (!xyz_fs.eof())
 	{
 		std::getline(xyz_fs, line);
@@ -89,7 +90,9 @@ int savePCDtoXYZ(	const pcl::PointCloud<pcl::PointXYZ> 	&pcl_pc,
 	for (size_t i = 0; i < pc_size; ++i)
 	{
 		point = pcl_pc.points.at(i);
-		xyz_file << point.x << " " << point.y << " " << point.z << "\n";
+		xyz_file << std::to_string(point.x) << " " 
+				 << std::to_string(point.y) << " " 
+				 << std::to_string(point.z) << "\n";
 	}
 	xyz_file.close();	
 

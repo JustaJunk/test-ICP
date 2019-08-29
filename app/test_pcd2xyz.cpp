@@ -15,7 +15,7 @@ int main()
 	std::string  					xyz_filename = filename + ".xyz";
 
 	//--- Load PCD file to pc
-	if (pcl::io::loadPCDFile<pcl::PointXYZ>(pcd_filename, pc) == -1)
+	if (pcl::io::loadPCDFile(pcd_filename, pc) == -1)
 	{
 		std::cout << "ERROR: Can't find PCD file " << pcd_filename << std::endl;
 		return EXIT_FAILURE;

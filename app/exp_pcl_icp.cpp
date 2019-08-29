@@ -16,6 +16,8 @@ int main()
 	const std::string 				pc_dst_filename = file_path + "input/pc_dst.xyz";
 	const std::string 				pc_src_filename = file_path + "input/pc_src.xyz";
 	const std::string 				pc_out_filename = file_path + "output/pc_out_pcl_icp.xyz";
+	std::clock_t 					time1;
+	std::clock_t 					time2;
 
 	//--- Load 2 input point cloud
 	std::cout << "Loading " << pc_dst_filename << std::endl;
@@ -40,10 +42,13 @@ int main()
 	icp.setInputTarget(pcd_dst_ptr);
 	icp.setInputSource(pcd_src_ptr);
 	std::cout << "Applying ICP algorithm" << std::endl;
+	time1 = std::clock();
 	icp.align(pcd_out);
-
+	time2 = std::clock();
 	//--- Show result
-	std::cout << std::endl  << "score: " << icp.getFitnessScore() << std::endl
+	std::cout << std::endl  << "runtime: " << (time2-time1)/(double)CLOCKS_PER_SEC
+							<< " sec" << std::endl
+							<< "score: " << icp.getFitnessScore() << std::endl
 							<< "transformation: " << std::endl
 							<< icp.getFinalTransformation() << std::endl << std::endl;
 
