@@ -1,59 +1,71 @@
 #------------------------------------------------------------------------------
-#  gen_random_pcd 
+#  test_gen_pcd 
 #------------------------------------------------------------------------------
 add_executable(	
-	gen_random_pcd 			
-	gen_random_pcd.cpp
+	test_gen_pcd 			
+	test_gen_pcd.cpp
 )
 target_link_libraries(
-	gen_random_pcd 	
+	test_gen_pcd 	
 	${LIBRARIES}
 )
 
 #------------------------------------------------------------------------------
-#  file_pcd2xyz 
+#  test_pcd2xyz 
 #------------------------------------------------------------------------------
 add_executable(
-	file_pcd2xyz 
-	file_pcd2xyz.cpp
+	test_pcd2xyz 
+	test_pcd2xyz.cpp
 )
 target_link_libraries(
-	file_pcd2xyz 
+	test_pcd2xyz 
 	${LIBRARIES}
 )
 
 #------------------------------------------------------------------------------
-#  file_xyz2pcd 
+#  test_xyz2pcd 
 #------------------------------------------------------------------------------
 add_executable(
-	file_xyz2pcd 
-	file_xyz2pcd.cpp
+	test_xyz2pcd 
+	test_xyz2pcd.cpp
 )
 target_link_libraries(
-	file_xyz2pcd 
+	test_xyz2pcd 
 	${LIBRARIES}
 )
 
 #------------------------------------------------------------------------------
-#  icp_exp_pcl 
+#  exp_cv_icp 
 #------------------------------------------------------------------------------
 add_executable(
-	icp_exp_pcl 
-	icp_exp_pcl.cpp
+	exp_cv_icp 
+	exp_cv_icp.cpp
 )
 target_link_libraries(
-	icp_exp_pcl 
+	exp_cv_icp 
 	${LIBRARIES}
 )
 
 #------------------------------------------------------------------------------
-#  icp_exp_cv 
+#  exp_pcl_icp 
 #------------------------------------------------------------------------------
 add_executable(
-	icp_exp_cv 
-	icp_exp_cv.cpp
+	exp_pcl_icp 
+	exp_pcl_icp.cpp
 )
 target_link_libraries(
-	icp_exp_cv 
+	exp_pcl_icp 
+	${LIBRARIES}
+)
+
+#------------------------------------------------------------------------------
+#  exp_pcl_gicp 
+#------------------------------------------------------------------------------
+add_executable(
+	exp_pcl_gicp 
+	exp_pcl_gicp.cpp
+)
+target_link_libraries(
+	exp_pcl_gicp 
 	${LIBRARIES}
 )
