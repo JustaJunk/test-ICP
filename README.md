@@ -1,5 +1,5 @@
-# test-PCL
-Test ICP algorithm using 3rd-party library openCV and PCL.  
+# test-ICP
+Test Iteration Closet Point (ICP) algorithm using 3rd-party library openCV and PCL.  
   
 ### OS  
 Windows7 x64  
