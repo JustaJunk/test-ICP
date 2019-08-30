@@ -4,19 +4,20 @@
 //
 //#############################################################################
 #include <iostream>
-#include <opencv2/surface_matching.hpp>
-#include <opencv2/surface_matching/ppf_helpers.hpp>
 #include "cv_parser.h"
+#include "cv_register.h"
 
 int main()
 {
-	cv::Mat 				p_dst_mat;
-	cv::Mat 				p_src_mat;
-	cv::Mat 				p_out_mat;
 	const std::string 		file_path 		= "../../Dataset/";
 	const std::string 		pc_dst_filename = file_path + "input/pc_dst.xyz";
 	const std::string 		pc_src_filename = file_path + "input/pc_src.xyz";
 	const std::string 		pc_out_filename = file_path + "output/pc_out_cv_icp.xyz";
+	cv::Mat 				p_dst_mat;
+	cv::Mat 				p_src_mat;
+	cv::Mat 				p_out_mat;
+	double 					score;
+	cv::Matx44d 			transformation;
 	std::clock_t 			time1;
 	std::clock_t 			time2;
 
@@ -34,49 +35,18 @@ int main()
 		return EXIT_FAILURE;
 	}
 
+	//--- apply ICP
+	std::cout << "Applying ICP algorithm" << std::endl;	
 	time1 = std::clock();
-
-	//--- Compute normals
-	cv::Mat 		pn_dst_mat;
-	cv::Mat 		pn_src_mat;
-	const int 		NbrNum = 10;
-	const cv::Vec3f	origin(0.0, 0.0, 0.0);
-	std::cout << "Computing normals of p_dst_mat" << std::endl;		
-	if (cv::ppf_match_3d::computeNormalsPC3d(	p_dst_mat,
-												pn_dst_mat,
-												NbrNum,
-												true,
-												origin) != 1)
+	if (mycv::applyICP(	p_dst_mat,
+						p_src_mat,
+						score,
+						p_out_mat,
+						transformation) == EXIT_FAILURE)
 	{
-		std::cout << "ERROR: cv::ppf_match_3d::computeNormalsPC3d() on p_dst_mat" << std::endl;
+		std::cout << "ERROR: mycv::applyICP()" << std::endl;
 		return EXIT_FAILURE;
 	}
-	std::cout << "Computing normals of p_src_mat" << std::endl;	
-	if (cv::ppf_match_3d::computeNormalsPC3d(	p_src_mat,
-												pn_src_mat,
-												NbrNum,
-												true,
-												origin) != 1)
-	{
-		std::cout << "ERROR: cv::ppf_match_3d::computeNormalsPC3d() on p_src_mat" << std::endl;
-		return EXIT_FAILURE;		
-	}
-
-	//--- Apply Iterative Closet Point algorithm
-	double 					score;
-	cv::Matx44d 			transformation;
-	cv::ppf_match_3d::ICP 	icp;
-	std::cout << "Applying ICP algorithm" << std::endl;	
-	if (icp.registerModelToScene(	pn_src_mat,
-									pn_dst_mat,
-									score,
-									transformation) != 0)
-	{
-		std::cout << "ERROR: cv::ppf_match_3d::ICP::registerModelToScene()" << std::endl;
-		return EXIT_FAILURE;		
-	}
-	p_out_mat = cv::ppf_match_3d::transformPCPose(p_src_mat, transformation);
-
 	time2 = std::clock();
 
 	//--- Show result
