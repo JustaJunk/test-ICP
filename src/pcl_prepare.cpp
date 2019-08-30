@@ -12,6 +12,49 @@ namespace mypcl
 
 //#############################################################################
 //
+//  samplePointCloud(): down sample the input point cloud
+//
+//#############################################################################
+int samplePointCloud(	const std::vector<point_cloud> 		&points_vec,
+						std::vector<point_cloud> 			&samples_vec)
+{
+	//--- Check if input vector is empty
+	if (points_vec.empty())
+	{
+		std::cout << "ERROR: Input point-cloud vector is empty" << std::endl;
+		return EXIT_FAILURE;
+	}
+
+	//--- Parameters
+	const float 	leaf_size 	= 0.01f;
+	const size_t 	cloud_count = points_vec.size();
+
+	//--- Setup sampler
+	pcl::VoxelGrid<pcl::PointXYZ> sp;
+	sp.setLeafSize(leaf_size,leaf_size,leaf_size);
+
+	//--- Setup variables for iterations
+	point_cloud::Ptr 	points_ptr(new point_cloud);
+	point_cloud 		samples;
+
+	//--- Sample the point cloud
+	samples_vec.clear();
+	samples_vec.resize(cloud_count);
+	for (size_t cloud_index = 0; cloud_index < cloud_count; ++cloud_index)
+	{
+		//--- Input
+		*points_ptr = points_vec.at(cloud_index);
+		sp.setInputCloud(points_ptr);
+
+		//--- Output
+		sp.filter(samples);
+		samples_vec.at(cloud_index) = samples;
+	}	
+	return EXIT_SUCCESS;
+}
+
+//#############################################################################
+//
 //  estimateNormals(): estimate normals of the input point cloud
 //
 //#############################################################################
@@ -26,8 +69,8 @@ int estimateNormals(const std::vector<point_cloud> 		&points_vec,
 	}
 
 	//--- Parameters
-	const double radius 		= 0.05;
-	const size_t cloud_count 	= points_vec.size();
+	const double 	radius 		= 0.05;
+	const size_t 	cloud_count = points_vec.size();
 
 	//--- Setup estimator
 	pcl::NormalEstimation<pcl::PointXYZ,pcl::PointNormal> ne;
@@ -46,9 +89,12 @@ int estimateNormals(const std::vector<point_cloud> 		&points_vec,
 	normals_vec.resize(cloud_count);
 	for (size_t cloud_index = 0; cloud_index < cloud_count; ++cloud_index)
 	{
+		//--- Input
 		*points_ptr = points_vec.at(cloud_index);
 		pcl::removeNaNFromPointCloud(*points_ptr, *points_ptr, nan_idx);
 		ne.setInputCloud(points_ptr);
+
+		//---Output
 		ne.compute(normals);
 		normal_count = normals.points.size();
 		for (size_t i = 0;  i < normal_count; ++i) 
@@ -57,7 +103,6 @@ int estimateNormals(const std::vector<point_cloud> 		&points_vec,
 			normals.points.at(i).y = points_ptr->points.at(i).y;
 			normals.points.at(i).z = points_ptr->points.at(i).z;
 		}
-
 		normals_vec.at(cloud_index) = normals;
 	}
 	return EXIT_SUCCESS;
@@ -101,10 +146,12 @@ int estimateSIFT(	const std::vector<normal_cloud> 	&normals_vec,
 	keypoints_vec.resize(cloud_count);
 	for (size_t cloud_index = 0; cloud_index < cloud_count; ++cloud_index)
 	{
+		//--- Input
 		*normals_ptr = normals_vec.at(cloud_index);
 		sift.setInputCloud(normals_ptr);
-		sift.compute(keypoints);
 
+		//--- Output
+		sift.compute(keypoints);
 		keypoints_vec.at(cloud_index) = keypoints;
 	}
 	return EXIT_SUCCESS;
@@ -166,14 +213,16 @@ int estimateFPFH(	const std::vector<point_cloud>		&points_vec,
 	features_vec.resize(cloud_count);
 	for (size_t cloud_index = 0; cloud_index < cloud_count; ++cloud_index)
 	{
+		//--- Input
 		*points_ptr  	= points_vec.at(cloud_index);
 		*normals_ptr 	= normals_vec.at(cloud_index);
 		pcl::copyPointCloud(keypoints_vec.at(cloud_index), *keypoints_ptr);
 		fpfh.setSearchSurface(points_ptr);
 		fpfh.setInputNormals(normals_ptr);
 		fpfh.setInputCloud(keypoints_ptr);
-		fpfh.compute(features);
 
+		//--- Output
+		fpfh.compute(features);
 		features_vec.at(cloud_index) = features;
 	}
 	return EXIT_SUCCESS;

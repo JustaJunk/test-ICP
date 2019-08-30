@@ -26,6 +26,14 @@ namespace mypcl
 
 //#############################################################################
 //
+//  samplePointCloud(): down sample the input point cloud
+//
+//#############################################################################
+int samplePointCloud(	const std::vector<point_cloud> 		&points_vec,
+						std::vector<point_cloud> 			&samples_vec);
+
+//#############################################################################
+//
 //  estimateNormals(): estimate normals of the input point cloud
 //
 //#############################################################################
