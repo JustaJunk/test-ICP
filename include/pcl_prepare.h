@@ -16,6 +16,11 @@
 #include <pcl/registration/icp.h>
 #include <pcl/filters/voxel_grid.h>
 
+using point_cloud 	= pcl::PointCloud<pcl::PointXYZ>;
+using normal_cloud 	= pcl::PointCloud<pcl::PointNormal>;
+using scalar_cloud 	= pcl::PointCloud<pcl::PointWithScale>;
+using feature_cloud	= pcl::PointCloud<pcl::FPFHSignature33>;
+
 namespace mypcl
 {
 
@@ -24,24 +29,26 @@ namespace mypcl
 //  estimateNormals(): estimate normals of the input point cloud
 //
 //#############################################################################
-int estimateNormals(const pcl::PointCloud<pcl::PointXYZ> 		&p_pcd,
-					pcl::PointCloud<pcl::PointNormal> 			&pn_pcd);
+int estimateNormals(const std::vector<point_cloud> 		&points_vec,
+					std::vector<normal_cloud> 			&normals_vec);
 
 //#############################################################################
 //
 //  estimateSIFT(): estimate SIFT keypoints of the input point cloud
 //
 //#############################################################################
-int estimateSIFT(	const pcl::PointCloud<pcl::PointNormal> 	&pn_pcd,
-					pcl::PointCloud<pcl::PointWithScale> 		&keypoints);
+int estimateSIFT(	const std::vector<normal_cloud> 	&normals_vec,
+					std::vector<scalar_cloud> 			&keypoints_vec);
 
 //#############################################################################
 //
-//  extractFPFH(): extract FPFH features from SIFT keypoints
+//  estimateFPFH(): estimate FPFH features from SIFT keypoints
 //
 //#############################################################################
-int extractFPFH(const pcl::PointCloud<pcl::PointWithScale> 		&keypoints,
-				pcl::PointCloud<pcl::FPFHSignature33> 			&features);
+int estimateFPFH(	const std::vector<point_cloud>		&points_vec,
+					const std::vector<normal_cloud> 	&normals_vec,
+					const std::vector<scalar_cloud> 	&keypoints_vec,
+					std::vector<feature_cloud> 			&features_vec);
 
 } //--- namespace mypcl
 
