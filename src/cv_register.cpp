@@ -7,6 +7,7 @@
 #include <iostream>
 #include <opencv2/surface_matching.hpp>
 #include <opencv2/surface_matching/ppf_helpers.hpp>
+#include "cv_parser.h"
 #include "cv_register.h"
 
 namespace mycv
@@ -19,7 +20,7 @@ namespace mycv
 //#############################################################################
 int applyICP(	const cv::Mat 	&dst_p_mat,
 				const cv::Mat 	&src_p_mat,
-				double 			score,
+				double 			&score,
 				cv::Mat 		&out_p_mat,
 				cv::Matx44d 	&transformation)
 {
@@ -58,6 +59,35 @@ int applyICP(	const cv::Mat 	&dst_p_mat,
 		return EXIT_FAILURE;		
 	}
 	out_p_mat = cv::ppf_match_3d::transformPCPose(src_p_mat, transformation);
+
+	return EXIT_SUCCESS;
+}
+
+//#############################################################################
+//
+//  applyICP(): apply ICP algorithm on 2 point clouds
+//
+//#############################################################################
+int applyICP(	const std::vector<cv::Point3d> 	&dst_p_vec,
+				const std::vector<cv::Point3d> 	&src_p_vec,
+				double 							&score,
+				cv::Mat 						&out_p_mat,
+				cv::Matx44d 					&transformation)
+{
+	cv::Mat dst_p_mat;
+	cv::Mat src_p_mat;
+
+	convertVECtoMAT(dst_p_vec, dst_p_mat);
+	convertVECtoMAT(src_p_vec, src_p_mat);
+
+	if (applyICP(	dst_p_mat,
+					src_p_mat,
+					score,
+					out_p_mat,
+					transformation) == EXIT_FAILURE)
+	{
+		return EXIT_FAILURE;
+	}
 
 	return EXIT_SUCCESS;
 }

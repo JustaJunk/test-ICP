@@ -35,7 +35,7 @@ int main()
 		return EXIT_FAILURE;
 	}
 
-	//--- apply ICP
+	//--- Apply ICP
 	std::cout << "Applying ICP algorithm" << std::endl;	
 	time1 = std::clock();
 	if (mycv::applyICP(	p_dst_mat,
