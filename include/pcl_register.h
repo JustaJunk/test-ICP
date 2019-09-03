@@ -8,20 +8,15 @@
 
 #include "pcl_prepare.h"
 
-//using point_cloud 	= pcl::PointCloud<pcl::PointXYZ>;
-//using normal_cloud 	= pcl::PointCloud<pcl::PointNormal>;
-//using scalar_cloud 	= pcl::PointCloud<pcl::PointWithScale>;
-//using feature_cloud	= pcl::PointCloud<pcl::FPFHSignature33>;
-
 namespace mypcl
 {
 
 //#############################################################################
 //
-//  roughAlign(): roughly align 2 point cloud
+//  featureAlign(): align point cloud by features
 //
 //#############################################################################
-int roughAlign(		const scalar_cloud		&dst_keypoints,
+int featureAlign(	const scalar_cloud		&dst_keypoints,
 					const feature_cloud 	&dst_features,
 					const scalar_cloud 		&src_keypoints,
 					const feature_cloud 	&src_features,
@@ -29,11 +24,29 @@ int roughAlign(		const scalar_cloud		&dst_keypoints,
 
 //#############################################################################
 //
+//  roughAlign(): roughly align 2 point cloud
+//
+//#############################################################################
+int roughAlign(		const point_cloud		&dst_points,
+					const point_cloud 		&src_points,
+					Eigen::Matrix4f 		transformation);
+
+//#############################################################################
+//
 //  preciseAlign(): precisely align 2 point cloud
 //	
 //#############################################################################
-int preciseAlign(	const point_cloud		&dst_pc,
-					const point_cloud 		&src_pc,
+int preciseAlign(	const point_cloud		&dst_points,
+					const point_cloud 		&src_points,
+					Eigen::Matrix4f 		transformation);
+
+//#############################################################################
+//
+//  hybridAlign(): roughly align and then precisely align
+//	
+//#############################################################################
+int hybridAlign(	const point_cloud		&dst_points,
+					const point_cloud 		&src_points,
 					Eigen::Matrix4f 		transformation);
 
 } //--- namespace mypcl

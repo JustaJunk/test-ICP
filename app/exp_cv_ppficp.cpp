@@ -1,6 +1,6 @@
 //#############################################################################
 //
-//  exp_cv_icp.cpp
+//  exp_cv_ppficp.cpp
 //
 //#############################################################################
 #include <iostream>
@@ -12,12 +12,11 @@ int main()
 	const std::string 		file_path 		= "../../Dataset/";
 	const std::string 		pc_dst_filename = file_path + "input/pc_dst.xyz";
 	const std::string 		pc_src_filename = file_path + "input/pc_src.xyz";
-	const std::string 		pc_out_filename = file_path + "output/pc_out_cv_icp.xyz";
+	const std::string 		pc_out_filename = file_path + "output/pc_out_cv_ppficp.xyz";
 	cv::Mat 				p_dst_mat;
 	cv::Mat 				p_src_mat;
+	pose_ptr 				out_pose_ptr;
 	cv::Mat 				p_out_mat;
-	double 					score;
-	cv::Matx44d 			transformation;
 	std::clock_t 			time1;
 	std::clock_t 			time2;
 
@@ -35,14 +34,13 @@ int main()
 		return EXIT_FAILURE;
 	}
 
-	//--- Apply ICP (from mycv)
-	std::cout << "Applying ICP algorithm" << std::endl;	
+	//--- Apply PPF+ICP (from mycv)
+	std::cout << "Applying PPF+ICP algorithm" << std::endl;	
 	time1 = std::clock();
-	if (mycv::applyICP(	p_dst_mat,
-						p_src_mat,
-						score,
-						p_out_mat,
-						transformation) == EXIT_FAILURE)
+	if (mycv::applyPPFICP(	p_dst_mat,
+							p_src_mat,
+							out_pose_ptr,
+							p_out_mat) == EXIT_FAILURE)
 	{
 		std::cout << "ERROR: mycv::applyICP()" << std::endl;
 		return EXIT_FAILURE;
@@ -52,9 +50,9 @@ int main()
 	//--- Show result
 	std::cout << std::endl  << "runtime: " << (time2-time1)/(double)CLOCKS_PER_SEC 
 							<< " sec" << std::endl
-							<< "score: " << score << std::endl 
+							<< "score: " << out_pose_ptr->residual << std::endl 
 							<< "transformation:" << std::endl
-							<< transformation  << std::endl << std::endl;
+							<< out_pose_ptr->pose  << std::endl << std::endl;
 
 	//--- Save result
 	std::cout << "Saving " << pc_out_filename << std::endl;	
@@ -65,3 +63,4 @@ int main()
 
 	return EXIT_SUCCESS;
 }
+

@@ -12,10 +12,10 @@ namespace mypcl
 
 //#############################################################################
 //
-//  roughAlign(): roughly align 2 point cloud with local feature
+//  featureAlign(): align point cloud by features
 //
 //#############################################################################
-int roughAlign(		const scalar_cloud		&dst_keypoints,
+int featureAlign(	const scalar_cloud		&dst_keypoints,
 					const feature_cloud 	&dst_features,
 					const scalar_cloud 		&src_keypoints,
 					const feature_cloud 	&src_features,
@@ -58,6 +58,40 @@ int roughAlign(		const scalar_cloud		&dst_keypoints,
 
 //#############################################################################
 //
+//  roughAlign(): roughly align 2 point cloud
+//
+//#############################################################################
+int roughAlign(		const point_cloud		&dst_points,
+					const point_cloud 		&src_points,
+					Eigen::Matrix4f 		transformation)
+{
+	std::vector<point_cloud>	pc_vec{dst_points, src_points};
+	std::vector<normal_cloud> 	nc_vec;
+	std::vector<scalar_cloud> 	kc_vec;
+	std::vector<feature_cloud> 	fc_vec;
+
+	estimateNormals(pc_vec, 
+					nc_vec);
+
+	estimateSIFT(	nc_vec, 
+					kc_vec);
+
+	estimateFPFH(	pc_vec, 
+					nc_vec, 
+					kc_vec, 
+					fc_vec);
+
+	featureAlign(	kc_vec.at(0),
+					fc_vec.at(0),
+					kc_vec.at(1),
+					fc_vec.at(1),
+					transformation);
+
+	return EXIT_SUCCESS;
+}
+
+//#############################################################################
+//
 //  preciseAlign(): precisely align 2 point cloud
 //	
 //#############################################################################
@@ -90,6 +124,34 @@ int preciseAlign(	const point_cloud		&dst_points,
 	point_cloud registration_output;
 	icp.align(registration_output);
 	transformation = icp.getFinalTransformation();	
+
+	return EXIT_SUCCESS;
+}
+
+//#############################################################################
+//
+//  hybridAlign(): roughly align and then precisely align
+//	
+//#############################################################################
+int hybridAlign(	const point_cloud		&dst_points,
+					const point_cloud 		&src_points,
+					Eigen::Matrix4f 		transformation)
+{
+	Eigen::Matrix4f t1;
+	Eigen::Matrix4f t2;
+	point_cloud 	tmp_points;
+
+	roughAlign(	dst_points, 
+				src_points, 
+				t1);
+
+	pcl::transformPointCloud(src_points, tmp_points, t1);
+
+	preciseAlign(	dst_points,
+					tmp_points,
+					t2);
+
+	transformation = t2*t1;
 
 	return EXIT_SUCCESS;
 }
