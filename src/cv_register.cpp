@@ -48,12 +48,12 @@ int applyICP(	const cv::Mat 	&dst_p_mat,
 	}
 
 	//--- Sample the point cloud
-	const float grid_step 	= 0.01;
+	float 		grid_step 	= 0.01;
 	cv::Mat 	dst_spn_mat;
 	cv::Mat 	src_spn_mat;
 
-	mycv::sampleCloudGridstep(dst_p_mat, grid_step, dst_spn_mat);
-	mycv::sampleCloudGridstep(src_p_mat, grid_step, src_spn_mat);
+	mycv::sampleCloudGridstep(dst_pn_mat, grid_step, dst_spn_mat);
+	mycv::sampleCloudGridstep(src_pn_mat, grid_step, src_spn_mat);
 
 	//--- Apply Iterative Closet Point algorithm
 	int 	maxIterations	= 100;

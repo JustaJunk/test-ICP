@@ -80,19 +80,20 @@ int sampleCloudUniform(	const cv::Mat 		&point_cloud,
 //
 //#############################################################################
 int sampleCloudGridstep(const cv::Mat 		&point_cloud,
-						const int 			&grid_step,
+						const float 		&grid_step,
 						cv::Mat 			&sample_cloud)
 {
-	cv::Vec2f xRange, yRange, zRange;
+	cv::Vec2f 	xRange, yRange, zRange;
+	cv::Mat 	copy_cloud = point_cloud.clone();
 
-	findCloudBox(point_cloud, xRange, yRange, zRange);
-
-	sample_cloud = cv::ppf_match_3d::samplePCByQuantization(point_cloud,
+	findCloudBox(copy_cloud, xRange, yRange, zRange);
+	
+	sample_cloud.release();
+	sample_cloud = cv::ppf_match_3d::samplePCByQuantization(copy_cloud,
 															xRange,
 															yRange,
 															zRange,
 															grid_step, 0);
-
 	return EXIT_SUCCESS;
 }
 

@@ -36,7 +36,7 @@ int sampleCloudUniform(	const cv::Mat 		&point_cloud,
 //
 //#############################################################################
 int sampleCloudGridstep(const cv::Mat 		&point_cloud,
-						const int 			&grid_step,
+						const float 		&grid_step,
 						cv::Mat 			&sample_cloud);
 
 } //--- namespace mycv
