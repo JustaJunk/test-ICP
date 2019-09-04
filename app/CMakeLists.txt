@@ -81,3 +81,15 @@ target_link_libraries(
 	exp_pcl_gicp 
 	${LIBRARIES}
 )
+
+#------------------------------------------------------------------------------
+#  exp_pcl_fpfhicp 
+#------------------------------------------------------------------------------
+add_executable(
+	exp_pcl_fpfhicp 
+	exp_pcl_fpfhicp.cpp
+)
+target_link_libraries(
+	exp_pcl_fpfhicp 
+	${LIBRARIES}
+)

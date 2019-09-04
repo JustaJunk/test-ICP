@@ -13,15 +13,6 @@ namespace mycv
 
 //#############################################################################
 //
-//  sampleUniformCloud(): down sample the input point cloud
-//
-//#############################################################################
-int sampleUniformCloud(	const cv::Mat 		&point_cloud,
-						const int 			&sample_step,
-						cv::Mat 			&sample_cloud);
-
-//#############################################################################
-//
 //  findCloudBox(): find the standard bonding box of the input point cloud
 //
 //#############################################################################
@@ -29,6 +20,24 @@ int findCloudBox(	const cv::Mat 		&point_cloud,
 					cv::Vec2f 			&xRange,
 					cv::Vec2f 			&yRange,
 					cv::Vec2f 			&zRange);
+
+//#############################################################################
+//
+//  sampleCloudUniform(): down sample the input point cloud
+//
+//#############################################################################
+int sampleCloudUniform(	const cv::Mat 		&point_cloud,
+						const int 			&sample_step,
+						cv::Mat 			&sample_cloud);
+
+//#############################################################################
+//
+//  sampleCloudGridstep(): down sample the input point cloud
+//
+//#############################################################################
+int sampleCloudGridstep(const cv::Mat 		&point_cloud,
+						const int 			&grid_step,
+						cv::Mat 			&sample_cloud);
 
 } //--- namespace mycv
 

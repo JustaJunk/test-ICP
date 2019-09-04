@@ -26,22 +26,22 @@ int samplePointCloud(	const std::vector<point_cloud> 		&points_vec,
 	}
 
 	//--- Parameters
-	const float 	leaf_size 	= 0.01f;
+	const float 	leaf_size 	= 0.025f;
 	const size_t 	cloud_count = points_vec.size();
 
 	//--- Setup sampler
 	pcl::VoxelGrid<pcl::PointXYZ> sp;
 	sp.setLeafSize(leaf_size,leaf_size,leaf_size);
 
-	//--- Setup variables for iterations
-	point_cloud::Ptr 	points_ptr(new point_cloud);
-	point_cloud 		samples;
-
 	//--- Sample the point cloud
 	samples_vec.clear();
 	samples_vec.resize(cloud_count);
 	for (size_t cloud_index = 0; cloud_index < cloud_count; ++cloud_index)
 	{
+		//--- Setup variables for iterations
+		point_cloud::Ptr 	points_ptr(new point_cloud);
+		point_cloud 		samples;
+			
 		//--- Input
 		*points_ptr = points_vec.at(cloud_index);
 		sp.setInputCloud(points_ptr);
@@ -49,7 +49,9 @@ int samplePointCloud(	const std::vector<point_cloud> 		&points_vec,
 		//--- Output
 		sp.filter(samples);
 		samples_vec.at(cloud_index) = samples;
-	}	
+		std::cout << samples.size() << " ";
+	}
+	std::cout << std::endl;	
 	return EXIT_SUCCESS;
 }
 
@@ -78,17 +80,17 @@ int estimateNormals(const std::vector<point_cloud> 		&points_vec,
 	ne.setSearchMethod(tree_xyz);
 	ne.setRadiusSearch(radius);
 
-	//--- Setup variables for iterations
-	point_cloud::Ptr 	points_ptr(new point_cloud);
-	normal_cloud 		normals;
-	std::vector<int> 	nan_idx;
-	size_t 				normal_count;
-
 	//--- Estimate normals for every point cloud
 	normals_vec.clear();
 	normals_vec.resize(cloud_count);
 	for (size_t cloud_index = 0; cloud_index < cloud_count; ++cloud_index)
 	{
+		//--- Setup variables for iterations
+		point_cloud::Ptr 	points_ptr(new point_cloud);
+		normal_cloud 		normals;
+		std::vector<int> 	nan_idx;
+		size_t 				normal_count;
+
 		//--- Input
 		*points_ptr = points_vec.at(cloud_index);
 		pcl::removeNaNFromPointCloud(*points_ptr, *points_ptr, nan_idx);
@@ -104,7 +106,9 @@ int estimateNormals(const std::vector<point_cloud> 		&points_vec,
 			normals.points.at(i).z = points_ptr->points.at(i).z;
 		}
 		normals_vec.at(cloud_index) = normals;
+		std::cout << normals.size() << " ";
 	}
+	std::cout << std::endl;
 	return EXIT_SUCCESS;
 }
 
@@ -137,15 +141,15 @@ int estimateSIFT(	const std::vector<normal_cloud> 	&normals_vec,
 	sift.setScales(min_scale, n_octaves, n_scales_per_octave);
 	sift.setMinimumContrast(min_contrast);
 
-	//--- Setup variables for iterations
-	normal_cloud::Ptr 	normals_ptr(new normal_cloud);	
-	scalar_cloud 		keypoints;
-
 	//--- Estimate keypoints for every normal cloud
 	keypoints_vec.clear();
 	keypoints_vec.resize(cloud_count);
 	for (size_t cloud_index = 0; cloud_index < cloud_count; ++cloud_index)
 	{
+		//--- Setup variables for iterations
+		normal_cloud::Ptr 	normals_ptr(new normal_cloud);	
+		scalar_cloud 		keypoints;
+
 		//--- Input
 		*normals_ptr = normals_vec.at(cloud_index);
 		sift.setInputCloud(normals_ptr);
@@ -153,7 +157,9 @@ int estimateSIFT(	const std::vector<normal_cloud> 	&normals_vec,
 		//--- Output
 		sift.compute(keypoints);
 		keypoints_vec.at(cloud_index) = keypoints;
+		std::cout << keypoints.size() << " ";
 	}
+	std::cout << std::endl;
 	return EXIT_SUCCESS;
 }
 
@@ -202,17 +208,17 @@ int estimateFPFH(	const std::vector<point_cloud>		&points_vec,
 	fpfh.setSearchMethod(tree_xyz);
 	fpfh.setRadiusSearch(radius);
 
-	//--- Setup variables for iterations
-	point_cloud::Ptr 	points_ptr(new point_cloud);
-	normal_cloud::Ptr 	normals_ptr(new normal_cloud);
-	point_cloud::Ptr 	keypoints_ptr(new point_cloud);
-	feature_cloud 		features;
-
 	//--- Estimate FPFH
 	features_vec.clear();
 	features_vec.resize(cloud_count);
 	for (size_t cloud_index = 0; cloud_index < cloud_count; ++cloud_index)
 	{
+		//--- Setup variables for iterations
+		point_cloud::Ptr 	points_ptr(new point_cloud);
+		normal_cloud::Ptr 	normals_ptr(new normal_cloud);
+		point_cloud::Ptr 	keypoints_ptr(new point_cloud);
+		feature_cloud 		features;
+
 		//--- Input
 		*points_ptr  	= points_vec.at(cloud_index);
 		*normals_ptr 	= normals_vec.at(cloud_index);
@@ -220,10 +226,12 @@ int estimateFPFH(	const std::vector<point_cloud>		&points_vec,
 		fpfh.setSearchSurface(points_ptr);
 		fpfh.setInputNormals(normals_ptr);
 		fpfh.setInputCloud(keypoints_ptr);
+		std::cout << points_ptr->size() << " " << normals_ptr->size() << " " << keypoints_ptr->size() << " ";
 
 		//--- Output
 		fpfh.compute(features);
 		features_vec.at(cloud_index) = features;
+		std::cout << features.size() << std::endl;
 	}
 	return EXIT_SUCCESS;
 }

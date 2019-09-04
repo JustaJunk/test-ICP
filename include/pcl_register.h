@@ -20,7 +20,7 @@ int featureAlign(	const scalar_cloud		&dst_keypoints,
 					const feature_cloud 	&dst_features,
 					const scalar_cloud 		&src_keypoints,
 					const feature_cloud 	&src_features,
-					Eigen::Matrix4f 		transformation);
+					Eigen::Matrix4f 		&transformation);
 
 //#############################################################################
 //
@@ -29,7 +29,8 @@ int featureAlign(	const scalar_cloud		&dst_keypoints,
 //#############################################################################
 int roughAlign(		const point_cloud		&dst_points,
 					const point_cloud 		&src_points,
-					Eigen::Matrix4f 		transformation);
+					point_cloud				&out_points,					
+					Eigen::Matrix4f 		&transformation);
 
 //#############################################################################
 //
@@ -38,7 +39,9 @@ int roughAlign(		const point_cloud		&dst_points,
 //#############################################################################
 int preciseAlign(	const point_cloud		&dst_points,
 					const point_cloud 		&src_points,
-					Eigen::Matrix4f 		transformation);
+					point_cloud 			&out_points,
+					Eigen::Matrix4f 		&transformation,
+					double 					&score);
 
 //#############################################################################
 //
@@ -47,7 +50,9 @@ int preciseAlign(	const point_cloud		&dst_points,
 //#############################################################################
 int hybridAlign(	const point_cloud		&dst_points,
 					const point_cloud 		&src_points,
-					Eigen::Matrix4f 		transformation);
+					point_cloud 			&out_points,
+					Eigen::Matrix4f 		&transformation,
+					double 					&score);
 
 } //--- namespace mypcl
 

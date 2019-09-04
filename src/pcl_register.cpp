@@ -19,7 +19,7 @@ int featureAlign(	const scalar_cloud		&dst_keypoints,
 					const feature_cloud 	&dst_features,
 					const scalar_cloud 		&src_keypoints,
 					const feature_cloud 	&src_features,
-					Eigen::Matrix4f 		transformation)
+					Eigen::Matrix4f 		&transformation)
 {
 	//--- Parameters
 	const float min_sample_distance 		= 0.025f;
@@ -29,10 +29,10 @@ int featureAlign(	const scalar_cloud		&dst_keypoints,
 	//--- Setup aligner
 	pcl::SampleConsensusInitialAlignment<	pcl::PointWithScale, 
 											pcl::PointWithScale, 
-											pcl::FPFHSignature33> 	ra;
-	ra.setMinSampleDistance(min_sample_distance);
-	ra.setMaxCorrespondenceDistance(max_correspondence_distance);
-	ra.setMaximumIterations(nr_iterations);
+											pcl::FPFHSignature33> 	fa;
+	fa.setMinSampleDistance(min_sample_distance);
+	fa.setMaxCorrespondenceDistance(max_correspondence_distance);
+	fa.setMaximumIterations(nr_iterations);
 
 	//--- Setup input
 	scalar_cloud::Ptr  	dst_keypoints_ptr(new scalar_cloud);
@@ -43,15 +43,15 @@ int featureAlign(	const scalar_cloud		&dst_keypoints,
 	*dst_features_ptr	= dst_features;
 	*src_keypoints_ptr	= src_keypoints;
 	*src_features_ptr	= src_features;
-	ra.setInputTarget(dst_keypoints_ptr);
-	ra.setTargetFeatures(dst_features_ptr);
-	ra.setInputCloud(src_keypoints_ptr);
-	ra.setSourceFeatures(src_features_ptr);
+	fa.setInputTarget(dst_keypoints_ptr);
+	fa.setTargetFeatures(dst_features_ptr);
+	fa.setInputCloud(src_keypoints_ptr);
+	fa.setSourceFeatures(src_features_ptr);
 
 	//--- Calculate output
-	scalar_cloud registration_output;
-	ra.align(registration_output);
-	transformation = ra.getFinalTransformation();
+	scalar_cloud	out_points;
+	fa.align(out_points);
+	transformation = fa.getFinalTransformation();
 
 	return EXIT_SUCCESS;
 }
@@ -63,7 +63,8 @@ int featureAlign(	const scalar_cloud		&dst_keypoints,
 //#############################################################################
 int roughAlign(		const point_cloud		&dst_points,
 					const point_cloud 		&src_points,
-					Eigen::Matrix4f 		transformation)
+					point_cloud				&out_points,					
+					Eigen::Matrix4f 		&transformation)
 {
 	std::vector<point_cloud>	pc_vec{dst_points, src_points};
 	std::vector<normal_cloud> 	nc_vec;
@@ -87,6 +88,8 @@ int roughAlign(		const point_cloud		&dst_points,
 					fc_vec.at(1),
 					transformation);
 
+	pcl::transformPointCloud(src_points, out_points, transformation);
+
 	return EXIT_SUCCESS;
 }
 
@@ -97,7 +100,9 @@ int roughAlign(		const point_cloud		&dst_points,
 //#############################################################################
 int preciseAlign(	const point_cloud		&dst_points,
 					const point_cloud 		&src_points,
-					Eigen::Matrix4f 		transformation)
+					point_cloud 			&out_points,
+					Eigen::Matrix4f 		&transformation,
+					double 					&score)
 {
 	//--- Parameters
 	const float max_correspondence_distance = 0.05f;
@@ -121,8 +126,8 @@ int preciseAlign(	const point_cloud		&dst_points,
 	icp.setInputSource(src_points_ptr);
 
 	//--- Calculate output
-	point_cloud registration_output;
-	icp.align(registration_output);
+	icp.align(out_points);
+	score = icp.getFitnessScore();
 	transformation = icp.getFinalTransformation();	
 
 	return EXIT_SUCCESS;
@@ -135,21 +140,24 @@ int preciseAlign(	const point_cloud		&dst_points,
 //#############################################################################
 int hybridAlign(	const point_cloud		&dst_points,
 					const point_cloud 		&src_points,
-					Eigen::Matrix4f 		transformation)
+					point_cloud 			&out_points,
+					Eigen::Matrix4f 		&transformation,
+					double 					&score)
 {
 	Eigen::Matrix4f t1;
 	Eigen::Matrix4f t2;
 	point_cloud 	tmp_points;
 
 	roughAlign(	dst_points, 
-				src_points, 
+				src_points,
+				tmp_points, 
 				t1);
-
-	pcl::transformPointCloud(src_points, tmp_points, t1);
 
 	preciseAlign(	dst_points,
 					tmp_points,
-					t2);
+					out_points,
+					t2,
+					score);
 
 	transformation = t2*t1;
 
