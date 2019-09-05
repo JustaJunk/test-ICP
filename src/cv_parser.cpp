@@ -18,16 +18,18 @@ namespace mycv
 int convertVECtoMAT(	const std::vector<cv::Point3d> 	&points_vec,
 						cv::Mat 						&Nx3_mat)
 {
-	int point_count = (int)points_vec.size();
+	int 	point_count = (int)points_vec.size();
+	float* 	point_ptr;
 
 	Nx3_mat.release();
 	Nx3_mat.create(point_count,3,CV_32F);
 
 	for (int row = 0; row < point_count; ++row)
 	{
-		Nx3_mat.at<float>(row,0) = (float)points_vec.at(row).x;
-		Nx3_mat.at<float>(row,1) = (float)points_vec.at(row).y;
-		Nx3_mat.at<float>(row,2) = (float)points_vec.at(row).z;
+		point_ptr = Nx3_mat.ptr<float>(row);
+		point_ptr[0] = (float)points_vec[row].x;
+		point_ptr[1] = (float)points_vec[row].y;
+		point_ptr[2] = (float)points_vec[row].z;
 	}
 
 	return EXIT_SUCCESS;

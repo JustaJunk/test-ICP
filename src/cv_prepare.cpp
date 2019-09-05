@@ -84,12 +84,11 @@ int sampleCloudGridstep(const cv::Mat 		&point_cloud,
 						cv::Mat 			&sample_cloud)
 {
 	cv::Vec2f 	xRange, yRange, zRange;
-	cv::Mat 	copy_cloud = point_cloud.clone();
 
-	findCloudBox(copy_cloud, xRange, yRange, zRange);
+	findCloudBox(point_cloud, xRange, yRange, zRange);
 	
 	sample_cloud.release();
-	sample_cloud = cv::ppf_match_3d::samplePCByQuantization(copy_cloud,
+	sample_cloud = cv::ppf_match_3d::samplePCByQuantization(point_cloud,
 															xRange,
 															yRange,
 															zRange,
